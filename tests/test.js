@@ -330,6 +330,30 @@ test('ejemplo 2: P(Duerme=sí | Aprueba=sí) = 0.49 / 0.628', () => {
 });
 
 // ---------------------------------------------------------------------------
+console.log('\nEjemplo 3 (5 nodos, contagio y gripe): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo03.md)');
+const ej3 = load('03-gripe-5nodos.json');
+
+test('el ejemplo 3 es una red válida de 5 nodos', () => {
+  const v = BN.validateNetwork(ej3);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej3.nodes.length === 5, 'debe tener 5 nodos');
+});
+test('P(Gripe=sí | Falta=sí) = 0.59·0.31 / 0.3002 ≈ 0.6093', () => {
+  const r = BN.infer(ej3, ['Gripe'], { Falta: 'sí' });
+  near(r.marginals.Gripe.sí, 0.1829 / 0.3002, 1e-12);
+  near(r.pEvidence, 0.3002, 1e-12);
+});
+test('ejemplo 3: P(Gripe=sí) = 0.31, P(Fiebre=sí) = 0.286 y P(Tos=sí) = 0.324', () => {
+  near(BN.infer(ej3, ['Gripe'], {}).marginals.Gripe.sí, 0.31, 1e-12);
+  near(BN.infer(ej3, ['Fiebre'], {}).marginals.Fiebre.sí, 0.286, 1e-12);
+  near(BN.infer(ej3, ['Tos'], {}).marginals.Tos.sí, 0.324, 1e-12);
+});
+test('ejemplo 3: P(Tos=sí | Falta=sí) = 0.1332 / 0.3002', () => {
+  const r = BN.infer(ej3, ['Tos'], { Falta: 'sí' });
+  near(r.marginals.Tos.sí, 0.1332 / 0.3002, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
 console.log('\nEjemplos del repositorio');
 test('todos los ejemplos son válidos y VE coincide con la enumeración', () => {
   const dir = path.join(root, 'ejemplos');
