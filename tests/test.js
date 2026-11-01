@@ -307,6 +307,29 @@ test('ejemplo 5: consulta con dos evidencias coincide con la enumeración (≈ 0
 });
 
 // ---------------------------------------------------------------------------
+console.log('\nEjemplo 2 (4 nodos, examen y beca): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo02.md)');
+const ej2 = load('02-examen-4nodos.json');
+
+test('el ejemplo 2 es una red válida de 4 nodos', () => {
+  const v = BN.validateNetwork(ej2);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej2.nodes.length === 4, 'debe tener 4 nodos');
+});
+test('P(Estudia=sí | Aprueba=sí) = 0.84·0.6 / 0.628 ≈ 0.8025', () => {
+  const r = BN.infer(ej2, ['Estudia'], { Aprueba: 'sí' });
+  near(r.marginals.Estudia.sí, 0.504 / 0.628, 1e-12);
+  near(r.pEvidence, 0.628, 1e-12);
+});
+test('ejemplo 2: P(Aprueba=sí) = 0.628 y P(Beca=sí) = 0.5396', () => {
+  near(BN.infer(ej2, ['Aprueba'], {}).marginals.Aprueba.sí, 0.628, 1e-12);
+  near(BN.infer(ej2, ['Beca'], {}).marginals.Beca.sí, 0.5396, 1e-12);
+});
+test('ejemplo 2: P(Duerme=sí | Aprueba=sí) = 0.49 / 0.628', () => {
+  const r = BN.infer(ej2, ['Duerme'], { Aprueba: 'sí' });
+  near(r.marginals.Duerme.sí, 0.49 / 0.628, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
 console.log('\nEjemplos del repositorio');
 test('todos los ejemplos son válidos y VE coincide con la enumeración', () => {
   const dir = path.join(root, 'ejemplos');
