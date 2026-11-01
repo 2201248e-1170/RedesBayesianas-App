@@ -1,5 +1,5 @@
 RED BAYESIANA DE 10 NODOS — TEMA: FALLAS DE PC
-Estructura: árbol binario, ≤2 padres por nodo (solo N10 tiene 2)
+Estructura: red sin ciclos dirigidos, ≤2 padres por nodo (solo N10 tiene 2: CPU y RAM, que comparten a Motherboard)
 
 1) VARIABLES, PADRES Y ESTADOS
 
@@ -76,25 +76,77 @@ N10 · PCEnciende (padres: CPU, RAM)
 Consulta: P(PCEnciende | PantallaAzul=Sí, SistemaOperativo=Arranca)
 Consulta verificable a mano (referencia independiente): P(PCEnciende | RAM=Falla)
 
-4) CÁLCULO MANUAL DE REFERENCIA (para validar la app)
+4) CÁLCULO MANUAL DE REFERENCIA
 
-P(PC=Sí | RAM=Falla) = Σ_{CPU} P(PC=Sí | CPU, RAM=Falla) · P(CPU)
+CORRECCIÓN DEL CÁLCULO MANUAL — P(PCEnciende=Sí | RAM=Falla)
 
-Marginales:
-P(F=OK)    = 0.95·0.9 + 0.3·0.1 = 0.885
-P(F=Falla) = 0.115
-P(MB=OK)   = 0.97·0.885 + 0.4·0.115 = 0.90445
-P(MB=Falla)= 0.09555
-P(CPU=OK)  = 0.98·0.90445 + 0.2·0.09555 = 0.905471
-P(CPU=Falla)= 0.094529
+Error 1 corregido: con RAM=Falla, las filas válidas de N10 son
+  CPU=OK,    RAM=Falla → 0.6
+  CPU=Falla, RAM=Falla → 0.05
+(antes usé 0.5, que corresponde a CPU=Falla, RAM=OK — incorrecto)
 
-P(PC=Sí | RAM=Falla) = 0.6·0.905471 + 0.5·0.094529
-                     = 0.5432826 + 0.0472645
-                     = 0.5905471 ≈ 0.5905
+Error 2 corregido: NO se usa P(CPU) marginal, porque CPU y RAM
+NO son independientes (comparten Motherboard). Hay que usar
+P(CPU | RAM=Falla).
 
-RESULTADO ESPERADO: P(PCEnciende=Sí | RAM=Falla) ≈ 0.5905
+Cálculo correcto:
+
+P(PC=Sí | RAM=Falla) =
+    0.6  · P(CPU=OK    | RAM=Falla)
+  + 0.05 · P(CPU=Falla | RAM=Falla)
+
+Ahora hay que calcular P(CPU | RAM=Falla). Como CPU y RAM son
+ambas hijas de Motherboard (y MB depende de Fuente, y Fuente de
+Energía), condicionar en RAM=Falla cambia la distribución de MB:
+
+P(MB | RAM=Falla) ∝ P(RAM=Falla | MB) · P(MB)
+
+P(F=OK)     = 0.95·0.9 + 0.3·0.1 = 0.885
+P(F=Falla)  = 0.115
+P(MB=OK)    = 0.97·0.885 + 0.4·0.115 = 0.90445
+P(MB=Falla) = 0.09555
+
+P(RAM=Falla | MB=OK)    = 0.04
+P(RAM=Falla | MB=Falla) = 0.75
+
+P(RAM=Falla) = 0.04·0.90445 + 0.75·0.09555
+             = 0.036178 + 0.0716625
+             = 0.1078405
+
+P(MB=OK    | RAM=Falla) = 0.04·0.90445 / 0.1078405
+                        = 0.036178 / 0.1078405
+                        ≈ 0.33547
+
+P(MB=Falla | RAM=Falla) = 0.75·0.09555 / 0.1078405
+                        = 0.0716625 / 0.1078405
+                        ≈ 0.66453
+
+Ahora P(CPU | RAM=Falla) sumando sobre MB:
+
+P(CPU=OK | RAM=Falla) =
+    0.98·0.33547 + 0.2·0.66453
+  = 0.3287606 + 0.132906
+  = 0.4616666  ≈ 0.4617
+
+P(CPU=Falla | RAM=Falla) =
+    0.02·0.33547 + 0.8·0.66453
+  = 0.0067094 + 0.531624
+  = 0.5383334  ≈ 0.5383
+
+(verificación: 0.4617 + 0.5383 = 1.0000 ✓)
+
+Finalmente:
+
+P(PC=Sí | RAM=Falla) =
+    0.6  · 0.4616666
+  + 0.05 · 0.5383334
+  = 0.277       + 0.02691667
+  = 0.30391667
+
+RESULTADO CORREGIDO:
+P(PCEnciende=Sí | RAM=Falla) ≈ 0.3039
 
 5) NOTA DE ESTRATEGIA
 - La consulta de 2 evidencias se documenta como "consulta avanzada" y su resultado se verifica por ejecución en la app.
 - La consulta con RAM=Falla se usa como verificación independiente del motor de eliminación de variables.
-- Aaron (responsable del algoritmo) debe reproducir 0.5905 con la app.
+- Aaron (responsable del algoritmo) debe reproducir 0.3039 con la app.
