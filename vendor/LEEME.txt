@@ -1,0 +1,3 @@
+Copia local de Cytoscape.js v3.34.1 (https://js.cytoscape.org), licencia MIT.
+Se incluye para que la aplicación funcione sin internet (index.html la carga primero
+desde aquí y solo usa un CDN si este archivo no existe).

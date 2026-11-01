@@ -1,0 +1,10 @@
+{
+  "name": "redes-bayesianas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Editor y motor de inferencia (eliminación de variables) para redes bayesianas — Modelos Probabilistas",
+  "scripts": {
+    "test": "node tests/test.js",
+    "build:ejemplos": "node tools/build-ejemplos.js"
+  }
+}

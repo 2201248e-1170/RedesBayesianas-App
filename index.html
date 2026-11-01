@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redes bayesianas · Eliminación de variables</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="no-print barra-superior">
+    <h1>Redes bayesianas</h1>
+    <div class="botones">
+      <label>Ejemplo:
+        <select id="ejemplos"></select>
+      </label>
+      <button id="btn-abrir" type="button">Abrir…</button>
+      <input id="archivo" type="file" accept=".json,application/json" hidden>
+      <button id="btn-guardar" type="button">Guardar</button>
+      <button id="btn-imprimir" type="button">Imprimir</button>
+      <button id="btn-ayuda" type="button" aria-label="Ayuda" title="Ayuda">?</button>
+    </div>
+  </header>
+
+  <div id="mensajes" class="no-print" role="status" hidden></div>
+
+  <main>
+    <section class="tarjeta no-print" aria-labelledby="t-grafo">
+      <h2 id="t-grafo">Red <small id="nombre-red"></small></h2>
+      <div id="cy" aria-label="Grafo de la red bayesiana"></div>
+      <p class="nota">Arrastre los nodos para reorganizarlos. Toque un nodo para ver su tabla de probabilidad.</p>
+      <div id="detalle" class="detalle"></div>
+    </section>
+
+    <section class="tarjeta no-print" aria-labelledby="t-consulta">
+      <h2 id="t-consulta">Consulta</h2>
+      <p class="nota">Marque las variables de consulta y elija el estado observado de las de evidencia.</p>
+      <div id="variables"></div>
+      <label class="comparar"><input type="checkbox" id="comparar" checked> Comparar con enumeración completa (verificación)</label>
+      <button id="btn-ejecutar" type="button" class="primario">Ejecutar eliminación de variables</button>
+      <div id="resultado" class="resultado"></div>
+    </section>
+
+    <section class="tarjeta no-print ancho" aria-labelledby="t-editor">
+      <details>
+        <summary id="t-editor">Editor JSON (temporal: el equipo lo reemplaza por formularios)</summary>
+        <p class="nota">Edite la red y pulse «Aplicar». Se valida antes de aceptarla. El formato está en <code>docs/FORMATO.md</code>.</p>
+        <textarea id="editor" spellcheck="false" rows="16"></textarea>
+        <button id="btn-aplicar" type="button">Aplicar</button>
+      </details>
+    </section>
+
+    <section id="reporte" class="tarjeta ancho" aria-label="Reporte imprimible"></section>
+  </main>
+
+  <dialog id="ayuda" class="no-print">
+    <h2>Cómo se usa</h2>
+    <ol>
+      <li>Elija un <strong>ejemplo</strong> o abra un archivo <code>.json</code> con <strong>Abrir…</strong>.</li>
+      <li>Arrastre los nodos del grafo; toque uno para ver su tabla de probabilidad condicional.</li>
+      <li>En <strong>Consulta</strong>, marque una o más variables de consulta y/o elija el estado de las variables de evidencia.</li>
+      <li>Pulse <strong>Ejecutar eliminación de variables</strong>. Verá las distribuciones, P(evidencia), el orden de eliminación y cada paso.</li>
+      <li><strong>Guardar</strong> descarga la red (con la posición de los nodos). <strong>Imprimir</strong> imprime el reporte de la red y del último resultado.</li>
+      <li>Para crear o modificar una red use el editor JSON; se valida (DAG, filas de CPT que suman 1, 3 a 10 nodos).</li>
+    </ol>
+    <form method="dialog"><button>Cerrar</button></form>
+  </dialog>
+
+  <!-- Cytoscape: copia local (vendor/) y, si no existe, CDN con versión fija -->
+  <script src="vendor/cytoscape.min.js"></script>
+  <script>
+    if (typeof cytoscape === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.1/dist/cytoscape.min.js"><\/script>');
+    }
+  </script>
+  <script src="src/factor.js"></script>
+  <script src="src/validate.js"></script>
+  <script src="src/infer.js"></script>
+  <script src="src/ejemplos.generated.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
