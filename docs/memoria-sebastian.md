@@ -44,3 +44,14 @@ La consulta resuelta fue **P(Estudia = sí | Aprueba = sí)**. Es decir, la prob
 Para verificarlo, primero apliqué la **poda**: el nodo `Beca` no es ancestro de `Estudia` ni de `Aprueba` y no tiene evidencia; como su tabla de probabilidad suma 1, se puede omitir de los cálculos sin alterar el resultado. Tras la poda, el cálculo se reduce a tres nodos: `Estudia`, `Duerme` y `Aprueba`.
 
 Debido a que `Aprueba` es un colisionador, tuve que sumar (marginalizar) sobre `Duerme` para calcular la probabilidad de que el estudiante apruebe. Obtuve un paso intermedio clave: P(Aprueba = sí) = 0.628. Finalmente, apliqué el teorema de Bayes para obtener P(Estudia = sí | Aprueba = sí) = 0.802548. El cálculo manual coincidió con el resultado de la aplicación.
+
+### Red de 3 nodos (lluvia, aspersor y pasto)
+
+**Qué modela:**
+Esta es la red más pequeña del proyecto y representa las causas de que el pasto de un jardín esté mojado. Tiene 3 nodos binarios. En la raíz está `Lluvia`, de la cual dependen tanto el `Aspersor` como el estado del `Pasto`. Además, el `Aspersor` también influye en el `Pasto`, por lo que este nodo final tiene dos padres (es un colisionador).
+
+**La consulta:**
+La consulta resuelta fue **P(Lluvia = sí | Pasto = mojado)**. Es decir, cuál es la probabilidad de que haya llovido sabiendo que el pasto está mojado. El resultado obtenido fue **0.357688** (y P(Lluvia = no | Pasto = mojado) = 0.642312).
+
+**Cómo lo verifiqué:**
+Para verificarlo, apliqué la eliminación de variables. En este caso, la poda consiste en eliminar la variable oculta `Aspersor`, sumando sobre sus estados. Multiplicando los factores de `Lluvia` y `Aspersor` con la evidencia de que el pasto está mojado, y luego marginalizando el aspersor, obtuve que P(Pasto = mojado) = 0.448380. Al normalizar los valores, llegué al resultado de 0.357688 para `Lluvia = sí`. Este cálculo manual coincidió con la aplicación (la diferencia con la enumeración completa fue de 1.1·10⁻¹⁶).
