@@ -19,7 +19,7 @@ Antes de aceptar un archivo, la aplicación comprueba varias cosas: que la red t
 ### Red de 10 nodos (fallas de una PC)
 
 **Qué modela:**
-Esta red representa las causas y los síntomas de que una computadora personal falle. Tiene exactamente 10 nodos organizados como un grafo dirigido acíclico. En la raíz está `EnergiaElectrica`, de la cual dependen la `FuenteAlimentacion` y el `UPS`. La fuente alimenta a la `Motherboard` y al `DiscoDuro`. Un caso interesante ocurre con `Motherboard`: es el padre compartido de `CPU` y `RAM`, por lo que ambas comparten una causa en común. Esta estructura no es un árbol estricto, porque `CPU` y `RAM` vuelven a unirse más adelante en el nodo `PCEnciende` (que tiene dos padres), formando un rombo. El `DiscoDuro` determina si el `SistemaOperativo` arranca; la `RAM` influye en la `PantallaAzul`; y el nodo final, `PCEnciende`, depende de `CPU` y `RAM`.
+Esta red representa las causas y los síntomas de que una computadora personal falle. Tiene exactamente 10 nodos organizados como un grafo dirigido acíclico. En la raíz está EnergiaElectrica, de la cual dependen la FuenteAlimentacion y el UPS. La fuente alimenta a la Motherboard y al DiscoDuro. Un caso interesante ocurre con Motherboard: es el padre compartido de CPU y RAM, por lo que ambas comparten una causa en común. Esta estructura no es un árbol estricto, porque CPU y RAM vuelven a unirse más adelante en el nodo PCEnciende (que tiene dos padres), formando un rombo. El DiscoDuro condiciona la probabilidad de que el SistemaOperativo arranque; la RAM influye en la PantallaAzul; y el nodo final, PCEnciende, depende de CPU y RAM.
 
 **La consulta:**
 La consulta elegida para verificar el motor de inferencia es **P(PCEnciende = Sí | RAM = Falla)**. Es decir, la probabilidad de que la computadora encienda sabiendo que la memoria RAM falla. El resultado esperado por la aplicación es **0.303920**.
@@ -30,3 +30,17 @@ Para comprobar el algoritmo de eliminación de variables, realicé el cálculo a
 Un punto clave es que, como `CPU` y `RAM` comparten el padre `Motherboard`, **no son independientes**. Por lo tanto, al condicionar la consulta en `RAM=Falla`, es un error usar la probabilidad marginal P(CPU); hay que calcular P(CPU | RAM=Falla). De hecho, mi primer cálculo manual usó P(CPU) en lugar de P(CPU | RAM=Falla) y además una fila equivocada de la tabla de `PCEnciende`, y arrojó 0.5905, un resultado incorrecto. Al corregirlo y condicionar adecuadamente, obtuve los números intermedios correctos: P(evidencia) = 0.107841 y P(CPU=OK | RAM=Falla) ≈ 0.4617, lo que finalmente lleva al resultado de ≈ 0.3039. 
 
 Este cálculo manual coincide con la respuesta de la aplicación (0.303920). Esta coincidencia, junto con las 47 pruebas automatizadas y la comparación contra el método de enumeración completa, da confianza en que el motor de inferencia está implementado correctamente.
+
+
+### Red de 4 nodos (examen y beca)
+
+**Qué modela:**
+Esta red representa los factores que influyen en que un estudiante apruebe un examen y obtenga una beca. Tiene 4 nodos binarios. En la raíz están `Estudia` y `Duerme`, que son independientes entre sí. Ambas variables influyen en el nodo `Aprueba`, y el resultado de aprobar condiciona la probabilidad de que el estudiante reciba la `Beca`. Un detalle estructural importante es que `Aprueba` actúa como un **colisionador** (o convergencia): aunque `Estudia` y `Duerme` son independientes de origen, se vuelven dependientes al momento de condicionar sobre `Aprueba`.
+
+**La consulta:**
+La consulta resuelta fue **P(Estudia = sí | Aprueba = sí)**. Es decir, la probabilidad de que el estudiante haya estudiado, sabiendo que aprobó. El resultado obtenido fue **≈ 0.802548** (redondeado a 0.8025).
+
+**Cómo lo verifiqué:**
+Para verificarlo, primero apliqué la **poda**: el nodo `Beca` no es ancestro de `Estudia` ni de `Aprueba` y no tiene evidencia; como su tabla de probabilidad suma 1, se puede omitir de los cálculos sin alterar el resultado. Tras la poda, el cálculo se reduce a tres nodos: `Estudia`, `Duerme` y `Aprueba`.
+
+Debido a que `Aprueba` es un colisionador, tuve que sumar (marginalizar) sobre `Duerme` para calcular la probabilidad de que el estudiante apruebe. Obtuve un paso intermedio clave: P(Aprueba = sí) = 0.628. Finalmente, apliqué el teorema de Bayes para obtener P(Estudia = sí | Aprueba = sí) = 0.802548. El cálculo manual coincidió con el resultado de la aplicación.
