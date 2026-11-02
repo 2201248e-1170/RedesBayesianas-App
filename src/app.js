@@ -307,6 +307,50 @@ $('btn-exportar-img').addEventListener('click', () => {
     document.body.removeChild(link);
 });
 
+// Función de Jesús: Historial para Deshacer (Ctrl+Z) y Rehacer (Ctrl+Y)
+    let historialRed = [];
+    let pasoActual = -1;
+
+    // Guarda una copia exacta de la red en el historial
+    function guardarEstadoRed() {
+        const estado = $('editor').value; // El editor JSON siempre tiene el estado actual
+        if (pasoActual === -1 || historialRed[pasoActual] !== estado) {
+            historialRed = historialRed.slice(0, pasoActual + 1);
+            historialRed.push(estado);
+            pasoActual++;
+        }
+    }
+
+    // Guardar el estado inicial apenas cargue la página
+    setTimeout(guardarEstadoRed, 500);
+
+    // Si el usuario arrastra un nodo y lo suelta, guardamos el estado
+    // Guardar estado al soltar el clic global (por si movieron un nodo)
+document.addEventListener('mouseup', () => {
+    setTimeout(guardarEstadoRed, 100);
+});
+    $('btn-aplicar').addEventListener('click', guardarEstadoRed);
+ 
+    // Detectar atajos de teclado
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Z (Deshacer)
+        if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+            e.preventDefault();
+            if (pasoActual > 0) {
+                pasoActual--;
+                loadText(historialRed[pasoActual]);
+            }
+        }
+        // Ctrl + Y (Rehacer)
+        if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+            e.preventDefault();
+            if (pasoActual < historialRed.length - 1) {
+                pasoActual++;
+                loadText(historialRed[pasoActual]);
+            }
+        }
+    });
+
     $('btn-ejecutar').addEventListener('click', run);
     $('btn-aplicar').addEventListener('click', () => loadText($('editor').value));
     $('btn-ayuda').addEventListener('click', () => {
