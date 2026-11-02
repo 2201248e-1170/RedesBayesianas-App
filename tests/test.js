@@ -285,6 +285,101 @@ test('sin poda y con poda dan el mismo resultado', () => {
 });
 
 // ---------------------------------------------------------------------------
+console.log('\nEjemplo 5 (10 nodos, fallas de una PC): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo05.md)');
+const ej5 = load('05-pc-10nodos.json');
+
+test('el ejemplo 5 es una red válida de 10 nodos', () => {
+  const v = BN.validateNetwork(ej5);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej5.nodes.length === 10, 'debe tener 10 nodos');
+});
+test('P(PCEnciende=Sí | RAM=Falla) = 0.6·0.46167 + 0.05·0.53833 ≈ 0.3039', () => {
+  const r = BN.infer(ej5, ['PCEnciende'], { RAM: 'Falla' });
+  near(r.marginals.PCEnciende['Sí'], 0.3039, 5e-5);
+  near(r.pEvidence, 0.1078405, 1e-6);
+});
+test('ejemplo 5: consulta con dos evidencias coincide con la enumeración (≈ 0.6077)', () => {
+  const q = ['PCEnciende'];
+  const e = { PantallaAzul: 'Sí', SistemaOperativo: 'Arranca' };
+  const r = BN.infer(ej5, q, e);
+  assert(BN.compareResults(r, BN.enumerate(ej5, q, e)) < 1e-9, 'VE ≠ enumeración');
+  near(r.marginals.PCEnciende['Sí'], 0.6077, 1e-4);
+});
+
+// ---------------------------------------------------------------------------
+console.log('\nEjemplo 2 (4 nodos, examen y beca): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo02.md)');
+const ej2 = load('02-examen-4nodos.json');
+
+test('el ejemplo 2 es una red válida de 4 nodos', () => {
+  const v = BN.validateNetwork(ej2);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej2.nodes.length === 4, 'debe tener 4 nodos');
+});
+test('P(Estudia=sí | Aprueba=sí) = 0.84·0.6 / 0.628 ≈ 0.8025', () => {
+  const r = BN.infer(ej2, ['Estudia'], { Aprueba: 'sí' });
+  near(r.marginals.Estudia.sí, 0.504 / 0.628, 1e-12);
+  near(r.pEvidence, 0.628, 1e-12);
+});
+test('ejemplo 2: P(Aprueba=sí) = 0.628 y P(Beca=sí) = 0.5396', () => {
+  near(BN.infer(ej2, ['Aprueba'], {}).marginals.Aprueba.sí, 0.628, 1e-12);
+  near(BN.infer(ej2, ['Beca'], {}).marginals.Beca.sí, 0.5396, 1e-12);
+});
+test('ejemplo 2: P(Duerme=sí | Aprueba=sí) = 0.49 / 0.628', () => {
+  const r = BN.infer(ej2, ['Duerme'], { Aprueba: 'sí' });
+  near(r.marginals.Duerme.sí, 0.49 / 0.628, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
+console.log('\nEjemplo 3 (5 nodos, contagio y gripe): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo03.md)');
+const ej3 = load('03-gripe-5nodos.json');
+
+test('el ejemplo 3 es una red válida de 5 nodos', () => {
+  const v = BN.validateNetwork(ej3);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej3.nodes.length === 5, 'debe tener 5 nodos');
+});
+test('P(Gripe=sí | Falta=sí) = 0.59·0.31 / 0.3002 ≈ 0.6093', () => {
+  const r = BN.infer(ej3, ['Gripe'], { Falta: 'sí' });
+  near(r.marginals.Gripe.sí, 0.1829 / 0.3002, 1e-12);
+  near(r.pEvidence, 0.3002, 1e-12);
+});
+test('ejemplo 3: P(Gripe=sí) = 0.31, P(Fiebre=sí) = 0.286 y P(Tos=sí) = 0.324', () => {
+  near(BN.infer(ej3, ['Gripe'], {}).marginals.Gripe.sí, 0.31, 1e-12);
+  near(BN.infer(ej3, ['Fiebre'], {}).marginals.Fiebre.sí, 0.286, 1e-12);
+  near(BN.infer(ej3, ['Tos'], {}).marginals.Tos.sí, 0.324, 1e-12);
+});
+test('ejemplo 3: P(Tos=sí | Falta=sí) = 0.1332 / 0.3002', () => {
+  const r = BN.infer(ej3, ['Tos'], { Falta: 'sí' });
+  near(r.marginals.Tos.sí, 0.1332 / 0.3002, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
+console.log('\nEjemplo 4 (6 nodos, tareas y beca, con una variable de 3 estados): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo04.md)');
+const ej4 = load('04-tareas-6nodos.json');
+
+test('el ejemplo 4 es una red válida de 6 nodos con una variable de 3 estados', () => {
+  const v = BN.validateNetwork(ej4);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej4.nodes.length === 6, 'debe tener 6 nodos');
+  assert(ej4.nodes.some((n) => n.states.length === 3), 'debe haber una variable con 3 estados');
+});
+test('P(Dificultad=alta | Calificacion=buena) = 0.038 / 0.615 ≈ 0.0618', () => {
+  const r = BN.infer(ej4, ['Dificultad'], { Calificacion: 'buena' });
+  near(r.marginals.Dificultad.alta, 0.038 / 0.615, 1e-12);
+  near(r.marginals.Dificultad.baja, 0.252 / 0.615, 1e-12);
+  near(r.marginals.Dificultad.media, 0.325 / 0.615, 1e-12);
+  near(r.pEvidence, 0.615, 1e-12);
+});
+test('ejemplo 4: P(Horas=muchas) = 0.52 y P(Beca=sí) = 0.5305', () => {
+  near(BN.infer(ej4, ['Horas'], {}).marginals.Horas.muchas, 0.52, 1e-12);
+  near(BN.infer(ej4, ['Beca'], {}).marginals.Beca.sí, 0.5305, 1e-12);
+});
+test('ejemplo 4: P(Horas=muchas | Calificacion=buena) = 0.413 / 0.615', () => {
+  const r = BN.infer(ej4, ['Horas'], { Calificacion: 'buena' });
+  near(r.marginals.Horas.muchas, 0.413 / 0.615, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
 console.log('\nEjemplos del repositorio');
 test('todos los ejemplos son válidos y VE coincide con la enumeración', () => {
   const dir = path.join(root, 'ejemplos');
