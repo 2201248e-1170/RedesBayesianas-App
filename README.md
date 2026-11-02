@@ -34,7 +34,7 @@ Node.js 18 o superior (sin dependencias adicionales).
 | Plataforma | Navegador | Resultado |
 |---|---|---|
 | Linux | Chromium (automatizado, Playwright) | ✔ cargar, consultar, guardar/abrir, imprimir |
-| Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
+| Linux (Ubuntu 26.04 LTS) | Firefox 158.0 | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039; la verificación con enumeración coincide (dif. 6.1·10⁻¹⁶) |
 | _Windows_ | _…_ | _…_ |
 | _macOS_ | _…_ | _…_ |
 | _Android_ | _…_ | _…_ |
