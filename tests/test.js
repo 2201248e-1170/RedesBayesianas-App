@@ -354,6 +354,32 @@ test('ejemplo 3: P(Tos=sí | Falta=sí) = 0.1332 / 0.3002', () => {
 });
 
 // ---------------------------------------------------------------------------
+console.log('\nEjemplo 4 (6 nodos, tareas y beca, con una variable de 3 estados): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo04.md)');
+const ej4 = load('04-tareas-6nodos.json');
+
+test('el ejemplo 4 es una red válida de 6 nodos con una variable de 3 estados', () => {
+  const v = BN.validateNetwork(ej4);
+  assert(v.ok, v.errors.join('; '));
+  assert(ej4.nodes.length === 6, 'debe tener 6 nodos');
+  assert(ej4.nodes.some((n) => n.states.length === 3), 'debe haber una variable con 3 estados');
+});
+test('P(Dificultad=alta | Calificacion=buena) = 0.038 / 0.615 ≈ 0.0618', () => {
+  const r = BN.infer(ej4, ['Dificultad'], { Calificacion: 'buena' });
+  near(r.marginals.Dificultad.alta, 0.038 / 0.615, 1e-12);
+  near(r.marginals.Dificultad.baja, 0.252 / 0.615, 1e-12);
+  near(r.marginals.Dificultad.media, 0.325 / 0.615, 1e-12);
+  near(r.pEvidence, 0.615, 1e-12);
+});
+test('ejemplo 4: P(Horas=muchas) = 0.52 y P(Beca=sí) = 0.5305', () => {
+  near(BN.infer(ej4, ['Horas'], {}).marginals.Horas.muchas, 0.52, 1e-12);
+  near(BN.infer(ej4, ['Beca'], {}).marginals.Beca.sí, 0.5305, 1e-12);
+});
+test('ejemplo 4: P(Horas=muchas | Calificacion=buena) = 0.413 / 0.615', () => {
+  const r = BN.infer(ej4, ['Horas'], { Calificacion: 'buena' });
+  near(r.marginals.Horas.muchas, 0.413 / 0.615, 1e-12);
+});
+
+// ---------------------------------------------------------------------------
 console.log('\nEjemplos del repositorio');
 test('todos los ejemplos son válidos y VE coincide con la enumeración', () => {
   const dir = path.join(root, 'ejemplos');
