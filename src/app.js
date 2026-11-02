@@ -292,6 +292,21 @@
     });
     $('btn-guardar').addEventListener('click', save);
     $('btn-imprimir').addEventListener('click', () => window.print());
+    
+// Función de Jesús: Exportar grafo a PNG
+$('btn-exportar-img').addEventListener('click', () => {
+    // cy.png() toma la foto directamente del lienzo con fondo blanco
+    const pngUrl = cy.png({ bg: '#ffffff', full: true });
+    
+    // Crear un enlace invisible para forzar la descarga
+    const link = document.createElement('a');
+    link.href = pngUrl;
+    link.download = 'grafo-red-bayesiana.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
     $('btn-ejecutar').addEventListener('click', run);
     $('btn-aplicar').addEventListener('click', () => loadText($('editor').value));
     $('btn-ayuda').addEventListener('click', () => {
