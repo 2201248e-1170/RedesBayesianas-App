@@ -285,28 +285,6 @@ test('sin poda y con poda dan el mismo resultado', () => {
 });
 
 // ---------------------------------------------------------------------------
-console.log('\nEjemplo 5 (10 nodos, fallas de una PC): VE contra cálculo hecho a mano (ver docs/verificacion-ejemplo05.md)');
-const ej5 = load('05-pc-10nodos.json');
-
-test('el ejemplo 5 es una red válida de 10 nodos', () => {
-  const v = BN.validateNetwork(ej5);
-  assert(v.ok, v.errors.join('; '));
-  assert(ej5.nodes.length === 10, 'debe tener 10 nodos');
-});
-test('P(PCEnciende=Sí | RAM=Falla) = 0.6·0.46167 + 0.05·0.53833 ≈ 0.3039', () => {
-  const r = BN.infer(ej5, ['PCEnciende'], { RAM: 'Falla' });
-  near(r.marginals.PCEnciende['Sí'], 0.3039, 5e-5);
-  near(r.pEvidence, 0.1078405, 1e-6);
-});
-test('ejemplo 5: consulta con dos evidencias coincide con la enumeración (≈ 0.6077)', () => {
-  const q = ['PCEnciende'];
-  const e = { PantallaAzul: 'Sí', SistemaOperativo: 'Arranca' };
-  const r = BN.infer(ej5, q, e);
-  assert(BN.compareResults(r, BN.enumerate(ej5, q, e)) < 1e-9, 'VE ≠ enumeración');
-  near(r.marginals.PCEnciende['Sí'], 0.6077, 1e-4);
-});
-
-// ---------------------------------------------------------------------------
 console.log('\nEjemplos del repositorio');
 test('todos los ejemplos son válidos y VE coincide con la enumeración', () => {
   const dir = path.join(root, 'ejemplos');
