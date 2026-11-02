@@ -368,3 +368,78 @@ document.addEventListener('mouseup', () => {
   }
   init();
 })();
+
+// ==========================================
+// LÓGICA DE FORMULARIOS (Jesús)
+// ==========================================
+
+// 1. Llenar el formulario automáticamente al tocar un nodo en el lienzo
+cy.on('tap', 'node', (evt) => {
+    const id = evt.target.id();
+    try {
+        const data = JSON.parse($('editor').value);
+        if (data[id]) {
+            $('nodo-id').value = id;
+            $('nodo-estados').value = data[id].states.join(', ');
+        }
+    } catch(e) { 
+        console.error("Error al leer datos del nodo"); 
+    }
+});
+
+// 2. Botón Guardar / Crear Nodo
+$('btn-guardar-nodo').addEventListener('click', () => {
+    const id = $('nodo-id').value.trim();
+    const estados = $('nodo-estados').value.split(',').map(s => s.trim()).filter(s => s);
+    
+    if (!id || estados.length === 0) {
+        alert("Por favor ingresa un nombre de nodo y al menos un estado.");
+        return;
+    }
+
+    try {
+        const data = JSON.parse($('editor').value);
+        
+        // Si el nodo no existe, creamos su estructura básica
+        if (!data[id]) {
+            data[id] = { type: "discrete", states: estados, parents: [], cpt: [] };
+        } else {
+            // Si ya existe, actualizamos sus estados
+            data[id].states = estados;
+        }
+        
+        // Inyectamos el cambio, recargamos el grafo y guardamos en tu historial (Ctrl+Z)
+        $('editor').value = JSON.stringify(data, null, 2);
+        loadText($('editor').value); 
+        guardarEstadoRed(); 
+    } catch (e) {
+        alert("Error al procesar la información del nodo.");
+    }
+});
+
+// 3. Botón Eliminar Nodo
+$('btn-eliminar-nodo').addEventListener('click', () => {
+    const id = $('nodo-id').value.trim();
+    if (!id) return;
+    
+    try {
+        const data = JSON.parse($('editor').value);
+        if (data[id]) {
+            delete data[id]; // Borramos el nodo
+            
+            // Lo eliminamos si era padre de algún otro nodo
+            for (const node in data) {
+                data[node].parents = data[node].parents.filter(p => p !== id);
+            }
+            
+            // Recargamos el lienzo
+            $('editor').value = JSON.stringify(data, null, 2);
+            loadText($('editor').value);
+            guardarEstadoRed();
+            
+            // Limpiamos las cajas de texto de tu formulario
+            $('nodo-id').value = '';
+            $('nodo-estados').value = '';
+        }
+    } catch(e) {}
+});
