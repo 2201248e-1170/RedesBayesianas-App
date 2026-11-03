@@ -99,7 +99,7 @@ y se normaliza. Detalles en la memoria técnica.
 
 | Integrante | Rol | Contribución |
 |---|---|---|
-| _[Nombre A — Aaron]_ | A · Motor y verificación | _[completar con lo que realmente haga: motor de inferencia, verificación, memoria (algoritmo)]_ |
+| Uriel Guzman Cardoso | A · Motor y verificación | Secciones de la memoria técnica sobre los fundamentos de redes bayesianas y eliminación de variables, la explicación del algoritmo implementado, y las pruebas, resultados, limitaciones y posibles mejoras (`docs/memoria-fundamentos.md`, `docs/memoria-algoritmo.md` y `docs/memoria-pruebas.md`). |
 | Jesús Rodríguez | B · Interfaz y Pruebas | Desarrollé la interfaz interactiva de formularios para la gestión de nodos (creación, renombrado, edición de estados y eliminación limpia de variables), integrando el recálculo automático de las tablas de probabilidad CPT para cumplir con el motor de validación y mantener las aristas del grafo. Implementé la exportación del grafo a imagen PNG y el sistema de historial en memoria para Deshacer/Rehacer (`Ctrl+Z` / `Ctrl+Y`) mediante atajos de teclado y eventos globales. Apoyé en la resolución de conflictos de control de versiones en Git y la depuración del código JavaScript en la rama `ui`. |
 | Sebastián Rendon Silva (`se892`) | C · Datos, ejemplos y repositorio | Diseñé las redes de 4 nodos («Examen y beca»), 5 nodos («Contagio y gripe»), 6 nodos («Tareas y beca», con una variable de 3 estados) y 10 nodos («Fallas de una PC»): variables, estados y probabilidades, y las escribí en `ejemplos/02-…`, `03-…`, `04-…` y `05-…`. De cada una hice la verificación a mano ([`docs/verificacion-ejemplo02.md`](docs/verificacion-ejemplo02.md) a [`05`](docs/verificacion-ejemplo05.md)), la captura de evidencia (`docs/evidencias/`) y sus pruebas en `tests/test.js`. También subí la base del proyecto al repositorio y mezclé mi rama `datos` con `main`. El detalle está en el historial de commits. |
 
@@ -114,6 +114,7 @@ El detalle de cada contribución está en el historial de commits de GitHub.
   a Motherboard. Los corregí yo mismo y el resultado final, 0.3039, coincide con la aplicación. Claude también me ayudó a
   pasar mis tablas al formato JSON de la aplicación y a darle formato a los archivos `verificacion-ejemplo02.md` a `05.md` y a las pruebas de los ejemplos 2 a 5.
   Las variables, los estados, las probabilidades y los cálculos a mano de mis redes son míos, y todos mis commits están hechos con mi cuenta.
+- **Manual de usuario:** se completó (ejemplos con capturas, interpretación de resultados) y se le dio formato con ayuda de Claude, a partir del trabajo del equipo.
 - **Bibliotecas:** Cytoscape.js (licencia MIT, en `vendor/`) para dibujar el grafo.
 
 
