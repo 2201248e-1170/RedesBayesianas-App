@@ -5,7 +5,7 @@ visualizar, guardar y consultar redes bayesianas** de 3 a 10 nodos usando el mé
 variables** (Variable Elimination).
 
 - Repositorio: <https://github.com/2201248e-1170/RedesBayesianas-App>
-- Versión en línea: _[enlace a GitHub Pages — completar]_
+- Versión en línea: https://2201248e-1170.github.io/RedesBayesianas-App/
 - Manual de usuario y memoria técnica (PDF): _[enlaces/archivos — completar]_
 
 ## Qué hace
