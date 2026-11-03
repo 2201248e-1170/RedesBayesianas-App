@@ -29,14 +29,15 @@ No hay nada que instalar ni compilar.
 **Requisitos:** un navegador moderno (Chrome/Edge/Firefox/Safari recientes). Para las pruebas automáticas,
 Node.js 18 o superior (sin dependencias adicionales).
 
-**Plataformas probadas** _(completar con lo que prueben de verdad)_:
+**Plataformas probadas**:
 
 | Plataforma | Navegador | Resultado |
 |---|---|---|
 | Linux | Chromium (automatizado, Playwright) | ✔ cargar, consultar, guardar/abrir, imprimir |
-
-| Linux (Ubuntu 26.04 LTS) | Firefox 158.0 | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039; la verificación con enumeración coincide (dif. 6.1·10⁻¹⁶) |
-| _Windows_ | _…_ | _…_ |
+| Linux (Ubuntu 26.04 LTS) | Firefox 158.0 | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039; la verificación coincide |
+| Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
+| macOS | … | … |
+| Android | … | … |
 
 | Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
 | Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
