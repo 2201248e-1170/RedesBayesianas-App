@@ -5,7 +5,7 @@ visualizar, guardar y consultar redes bayesianas** de 3 a 10 nodos usando el mé
 variables** (Variable Elimination).
 
 - Repositorio: <https://github.com/2201248e-1170/RedesBayesianas-App>
-- Versión en línea: _[enlace a GitHub Pages — completar]_
+- Versión en línea: https://2201248e-1170.github.io/RedesBayesianas-App/
 - Manual de usuario y memoria técnica (PDF): _[enlaces/archivos — completar]_
 
 ## Qué hace
@@ -29,13 +29,19 @@ No hay nada que instalar ni compilar.
 **Requisitos:** un navegador moderno (Chrome/Edge/Firefox/Safari recientes). Para las pruebas automáticas,
 Node.js 18 o superior (sin dependencias adicionales).
 
-**Plataformas probadas** _(completar con lo que prueben de verdad)_:
+**Plataformas probadas**:
 
 | Plataforma | Navegador | Resultado |
 |---|---|---|
 | Linux | Chromium (automatizado, Playwright) | ✔ cargar, consultar, guardar/abrir, imprimir |
-| Linux (Ubuntu 26.04 LTS) | Firefox 158.0 | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039; la verificación con enumeración coincide (dif. 6.1·10⁻¹⁶) |
-| _Windows_ | _…_ | _…_ |
+| Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
+| Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
+| Mac (macOS) | Safari / Chrome | ✔ Carga correcta de la interfaz y funcionamiento en línea |
+| Android | Chrome | ✔ Carga correcta de la interfaz, edición de nodos y consultas en línea |
+
+| Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
+| Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
+
 | _macOS_ | _…_ | _…_ |
 | _Android_ | _…_ | _…_ |
 
@@ -99,7 +105,7 @@ y se normaliza. Detalles en la memoria técnica.
 | Integrante | Rol | Contribución |
 |---|---|---|
 | _[Nombre A — Aaron]_ | A · Motor y verificación | _[completar con lo que realmente haga: motor de inferencia, verificación, memoria (algoritmo)]_ |
-| _[Nombre B — Jesús]_ | B · Interfaz | _[completar con lo que realmente haga: interfaz gráfica, manual de usuario]_ |
+| Jesús Rodríguez | B · Interfaz y Pruebas | Desarrollé la interfaz interactiva de formularios para la gestión de nodos (creación, renombrado, edición de estados y eliminación limpia de variables), integrando el recálculo automático de las tablas de probabilidad CPT para cumplir con el motor de validación y mantener las aristas del grafo. Implementé la exportación del grafo a imagen PNG y el sistema de historial en memoria para Deshacer/Rehacer (`Ctrl+Z` / `Ctrl+Y`) mediante atajos de teclado y eventos globales. Apoyé en la resolución de conflictos de control de versiones en Git y la depuración del código JavaScript en la rama `ui`. |
 | Sebastián Rendon Silva (`se892`) | C · Datos, ejemplos y repositorio | Diseñé las redes de 4 nodos («Examen y beca»), 5 nodos («Contagio y gripe»), 6 nodos («Tareas y beca», con una variable de 3 estados) y 10 nodos («Fallas de una PC»): variables, estados y probabilidades, y las escribí en `ejemplos/02-…`, `03-…`, `04-…` y `05-…`. De cada una hice la verificación a mano ([`docs/verificacion-ejemplo02.md`](docs/verificacion-ejemplo02.md) a [`05`](docs/verificacion-ejemplo05.md)), la captura de evidencia (`docs/evidencias/`) y sus pruebas en `tests/test.js`. También subí la base del proyecto al repositorio y mezclé mi rama `datos` con `main`. El detalle está en el historial de commits. |
 
 La tabla se completa al final con lo que cada quien haya hecho de verdad; el historial de Git es la fuente.
@@ -115,4 +121,5 @@ La tabla se completa al final con lo que cada quien haya hecho de verdad; el his
   pasar mis tablas al formato JSON de la aplicación y a darle formato a los archivos `verificacion-ejemplo02.md` a `05.md` y a las pruebas de los ejemplos 2 a 5.
   Las variables, los estados, las probabilidades y los cálculos a mano de mis redes son míos, y todos mis commits están hechos con mi cuenta.
 - **Bibliotecas:** Cytoscape.js (licencia MIT, en `vendor/`) para dibujar el grafo.
-- _[Ajustar según lo que permita el profesor y lo que realmente haya pasado.]_
+
+
