@@ -69,7 +69,7 @@ Las capturas de cada consulta ejecutada en la aplicación están en `docs/eviden
 
 La prueba automatizada abre `index.html` en Chromium y comprueba, sin intervención manual: que Cytoscape.js esté cargado y el grafo se dibuje; que al marcar `Lluvia` como consulta y `Pasto = mojado` como evidencia el resultado muestre `0.357688` y `P(e) = 0.448380` con la verificación «✓» frente a la enumeración; que una consulta sin variables muestre el mensaje de error correspondiente; que una red inválida desde el editor (`{"nodes":[]}`) se rechace con «entre 3 y 10», y que no ocurran errores de JavaScript en la página.
 
-Según el `README.md`, además de esta prueba automatizada en Linux/Chromium, la interfaz se probó manualmente en Linux (Firefox), Windows (Brave/Chrome), macOS (Safari/Chrome) y Android (Chrome), cubriendo carga, edición de nodos, consultas y exportación a PNG.
+Según el `README.md`, además de esta prueba automatizada en Linux/Chromium, la interfaz se probó manualmente en Linux (Firefox), donde se cargó el ejemplo 5 y se ejecutó su consulta, y se comprobó que la versión en línea carga y se muestra sin errores en Windows (Brave/Chrome), macOS (Safari/Chrome) y Android (Chrome).
 
 ## 5. Limitaciones
 
