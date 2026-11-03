@@ -6,7 +6,8 @@ variables** (Variable Elimination).
 
 - Repositorio: <https://github.com/2201248e-1170/RedesBayesianas-App>
 - Versión en línea: https://2201248e-1170.github.io/RedesBayesianas-App/
-- Manual de usuario y memoria técnica (PDF): _[enlaces/archivos — completar]_
+- Manual de usuario (PDF): [docs/Manual de Usuario - Redes Bayesianas.pdf](docs/Manual%20de%20Usuario%20-%20Redes%20Bayesianas.pdf)
+- Memoria técnica (PDF): [docs/Memoria-tecnica.pdf](docs/Memoria-tecnica.pdf)
 
 ## Qué hace
 
@@ -35,15 +36,9 @@ Node.js 18 o superior (sin dependencias adicionales).
 |---|---|---|
 | Linux | Chromium (automatizado, Playwright) | ✔ cargar, consultar, guardar/abrir, imprimir |
 | Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
-| Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
-| Mac (macOS) | Safari / Chrome | ✔ Carga correcta de la interfaz y funcionamiento en línea |
-| Android | Chrome | ✔ Carga correcta de la interfaz, edición de nodos y consultas en línea |
-
-| Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
-| Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
-
-| _macOS_ | _…_ | _…_ |
-| _Android_ | _…_ | _…_ |
+| Windows | Brave / Chrome | ✔ la versión en línea carga y la interfaz se muestra sin errores |
+| macOS | Safari / Chrome | ✔ la versión en línea carga y la interfaz se muestra sin errores |
+| Android | Chrome | ✔ la versión en línea carga y la interfaz se muestra sin errores |
 
 ## Ejemplos incluidos
 
@@ -108,8 +103,7 @@ y se normaliza. Detalles en la memoria técnica.
 | Jesús Rodríguez | B · Interfaz y Pruebas | Desarrollé la interfaz interactiva de formularios para la gestión de nodos (creación, renombrado, edición de estados y eliminación limpia de variables), integrando el recálculo automático de las tablas de probabilidad CPT para cumplir con el motor de validación y mantener las aristas del grafo. Implementé la exportación del grafo a imagen PNG y el sistema de historial en memoria para Deshacer/Rehacer (`Ctrl+Z` / `Ctrl+Y`) mediante atajos de teclado y eventos globales. Apoyé en la resolución de conflictos de control de versiones en Git y la depuración del código JavaScript en la rama `ui`. |
 | Sebastián Rendon Silva (`se892`) | C · Datos, ejemplos y repositorio | Diseñé las redes de 4 nodos («Examen y beca»), 5 nodos («Contagio y gripe»), 6 nodos («Tareas y beca», con una variable de 3 estados) y 10 nodos («Fallas de una PC»): variables, estados y probabilidades, y las escribí en `ejemplos/02-…`, `03-…`, `04-…` y `05-…`. De cada una hice la verificación a mano ([`docs/verificacion-ejemplo02.md`](docs/verificacion-ejemplo02.md) a [`05`](docs/verificacion-ejemplo05.md)), la captura de evidencia (`docs/evidencias/`) y sus pruebas en `tests/test.js`. También subí la base del proyecto al repositorio y mezclé mi rama `datos` con `main`. El detalle está en el historial de commits. |
 
-La tabla se completa al final con lo que cada quien haya hecho de verdad; el historial de Git es la fuente.
-
+El detalle de cada contribución está en el historial de commits de GitHub.
 ## Declaración de herramientas
 
 - **Asistencia de IA (Claude, de Anthropic).** El esqueleto inicial del repositorio (motor de eliminación de variables,
