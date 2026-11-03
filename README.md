@@ -120,5 +120,5 @@ La tabla se completa al final con lo que cada quien haya hecho de verdad; el his
   pasar mis tablas al formato JSON de la aplicación y a darle formato a los archivos `verificacion-ejemplo02.md` a `05.md` y a las pruebas de los ejemplos 2 a 5.
   Las variables, los estados, las probabilidades y los cálculos a mano de mis redes son míos, y todos mis commits están hechos con mi cuenta.
 - **Bibliotecas:** Cytoscape.js (licencia MIT, en `vendor/`) para dibujar el grafo.
-- _[Ajustar según lo que permita el profesor y lo que realmente haya pasado.]_
+
 
