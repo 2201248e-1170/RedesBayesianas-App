@@ -34,10 +34,10 @@ Node.js 18 o superior (sin dependencias adicionales).
 | Plataforma | Navegador | Resultado |
 |---|---|---|
 | Linux | Chromium (automatizado, Playwright) | ✔ cargar, consultar, guardar/abrir, imprimir |
-| Linux (Ubuntu 26.04 LTS) | Firefox 158.0 | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039; la verificación coincide |
+| Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
 | Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
-| macOS | … | … |
-| Android | … | … |
+| Mac (macOS) | Safari / Chrome | ✔ Carga correcta de la interfaz y funcionamiento en línea |
+| Android | Chrome | ✔ Carga correcta de la interfaz, edición de nodos y consultas en línea |
 
 | Linux (Ubuntu) | Firefox | ✔ cargar el ejemplo 5 (10 nodos) y ejecutar la consulta P(PCEnciende \| RAM=Falla) = 0.3039 |
 | Windows | Brave / Chrome | ✔ Cargar interfaz localmente, formularios de creación/edición de nodos, exportación a PNG y control de historial (Ctrl+Z / Ctrl+Y) |
