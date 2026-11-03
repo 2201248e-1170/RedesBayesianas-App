@@ -17,6 +17,7 @@
       <input id="archivo" type="file" accept=".json,application/json" hidden>
       <button id="btn-guardar" type="button">Guardar</button>
       <button id="btn-imprimir" type="button">Imprimir</button>
+      <button id="btn-exportar-img" type="button">Exportar imagen</button> <!-- M de Jesus -->
       <button id="btn-ayuda" type="button" aria-label="Ayuda" title="Ayuda">?</button>
     </div>
   </header>
@@ -47,6 +48,38 @@
         <textarea id="editor" spellcheck="false" rows="16"></textarea>
         <button id="btn-aplicar" type="button">Aplicar</button>
       </details>
+      
+      <!-- ========================================== -->
+<!-- FORMULARIOS DE NODOS (Desarrollado por Jesús) -->
+<!-- ========================================== -->
+<div id="panel-edicion-nodos" class="card" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+    <h3>Editar / Crear Nodo</h3>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+        <div>
+            <label for="nodo-id" style="font-weight: bold; display: block; margin-bottom: 5px;">Nombre del Nodo (ID):</label>
+            <input type="text" id="nodo-id" placeholder="Ej: Alarma" style="width: 200px; padding: 5px;">
+        </div>
+        <div>
+            <label for="nodo-estados" style="font-weight: bold; display: block; margin-bottom: 5px;">Estados (separados por coma):</label>
+            <input type="text" id="nodo-estados" placeholder="Ej: encendida, apagada" style="width: 250px; padding: 5px;">
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <button id="btn-guardar-nodo" type="button" style="padding: 5px 15px; cursor: pointer;">Guardar Nodo</button>
+        <button id="btn-eliminar-nodo" type="button" style="padding: 5px 15px; color: #d9534f; cursor: pointer;">Eliminar Nodo</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 15px;">
+
+    <h4>Tabla de Probabilidades</h4>
+    <!-- Mañana inyectaremos la tabla matemática aquí con JS -->
+    <div id="contenedor-tabla-prob">
+        <p style="color: #888; font-style: italic;">Seleccione un nodo en el grafo o cree uno nuevo para editar sus probabilidades.</p>
+    </div>
+</div>
+
     </section>
 
     <section id="reporte" class="tarjeta ancho" aria-label="Reporte imprimible"></section>

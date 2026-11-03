@@ -292,6 +292,65 @@
     });
     $('btn-guardar').addEventListener('click', save);
     $('btn-imprimir').addEventListener('click', () => window.print());
+    
+// Función de Jesús: Exportar grafo a PNG
+$('btn-exportar-img').addEventListener('click', () => {
+    // cy.png() toma la foto directamente del lienzo con fondo blanco
+    const pngUrl = cy.png({ bg: '#ffffff', full: true });
+    
+    // Crear un enlace invisible para forzar la descarga
+    const link = document.createElement('a');
+    link.href = pngUrl;
+    link.download = 'grafo-red-bayesiana.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+// Función de Jesús: Historial para Deshacer (Ctrl+Z) y Rehacer (Ctrl+Y)
+    let historialRed = [];
+    let pasoActual = -1;
+
+    // Guarda una copia exacta de la red en el historial
+    function guardarEstadoRed() {
+        const estado = $('editor').value; // El editor JSON siempre tiene el estado actual
+        if (pasoActual === -1 || historialRed[pasoActual] !== estado) {
+            historialRed = historialRed.slice(0, pasoActual + 1);
+            historialRed.push(estado);
+            pasoActual++;
+        }
+    }
+
+    // Guardar el estado inicial apenas cargue la página
+    setTimeout(guardarEstadoRed, 500);
+
+    // Si el usuario arrastra un nodo y lo suelta, guardamos el estado
+    // Guardar estado al soltar el clic global (por si movieron un nodo)
+document.addEventListener('mouseup', () => {
+    setTimeout(guardarEstadoRed, 100);
+});
+    $('btn-aplicar').addEventListener('click', guardarEstadoRed);
+ 
+    // Detectar atajos de teclado
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Z (Deshacer)
+        if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+            e.preventDefault();
+            if (pasoActual > 0) {
+                pasoActual--;
+                loadText(historialRed[pasoActual]);
+            }
+        }
+        // Ctrl + Y (Rehacer)
+        if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+            e.preventDefault();
+            if (pasoActual < historialRed.length - 1) {
+                pasoActual++;
+                loadText(historialRed[pasoActual]);
+            }
+        }
+    });
+
     $('btn-ejecutar').addEventListener('click', run);
     $('btn-aplicar').addEventListener('click', () => loadText($('editor').value));
     $('btn-ayuda').addEventListener('click', () => {
@@ -308,4 +367,158 @@
     }
   }
   init();
+
+
+// ==========================================
+// LÓGICA DE FORMULARIOS Y NODOS (Jesús)
+// ==========================================
+
+let nodoSeleccionadoId = null;
+
+// 1. Detectar selección en el lienzo
+document.addEventListener('mouseup', () => {
+    setTimeout(() => {
+        try {
+            if (typeof cy !== 'undefined' && cy.$) {
+                const sel = cy.$('node:selected');
+                if (sel.length > 0) {
+                    const id = sel[0].id();
+                    const elEditor = document.getElementById('editor');
+                    if (elEditor && elEditor.value) {
+                        const data = JSON.parse(elEditor.value);
+                        const nodo = data.nodes.find(n => n.id === id);
+                        if (nodo) {
+                            nodoSeleccionadoId = id;
+                            document.getElementById('nodo-id').value = id;
+                            document.getElementById('nodo-estados').value = nodo.states.join(', ');
+                        }
+                    }
+                }
+            }
+        } catch(e) {}
+    }, 150);
+});
+
+// Función para construir la tabla de probabilidades (CPT) exacta que pide el validador
+function buildDefaultCPT(node, allNodes) {
+    const parentNodes = node.parents.map(pId => allNodes.find(n => n.id === pId)).filter(Boolean);
+    let combinations = [{}];
+    
+    // Producto cartesiano de los estados de todos los padres
+    for (const p of parentNodes) {
+        const newCombos = [];
+        for (const c of combinations) {
+            for (const state of p.states) {
+                newCombos.push({ ...c, [p.id]: state });
+            }
+        }
+        combinations = newCombos;
+    }
+    
+    // Probabilidad equitativa por defecto
+    const prob = Number((1 / node.states.length).toFixed(4));
+    const probs = {};
+    node.states.forEach(s => probs[s] = prob);
+    
+    return combinations.map(c => ({
+        given: c,
+        probs: { ...probs }
+    }));
+}
+
+// 2. Radar global de clics
+document.addEventListener('click', (e) => {
+    
+    // --- ACCIÓN: GUARDAR / RENOMBRAR NODO ---
+    if (e.target && e.target.id === 'btn-guardar-nodo') {
+        const inputId = document.getElementById('nodo-id');
+        const inputEstados = document.getElementById('nodo-estados');
+        const elEditor = document.getElementById('editor');
+        
+        if (!inputId || !inputEstados || !elEditor) return;
+        
+        const nuevoId = inputId.value.trim();
+        const estados = inputEstados.value.split(',').map(s => s.trim()).filter(Boolean);
+        
+        if (!nuevoId || estados.length === 0) return alert("Faltan datos.");
+
+        try {
+            const data = JSON.parse(elEditor.value);
+            let idViejo = nodoSeleccionadoId || 'Aspersor'; 
+            let nodeIndex = data.nodes.findIndex(n => n.id === idViejo);
+            
+            if (nodeIndex !== -1 && idViejo !== nuevoId) {
+                // Renombrar nodo
+                data.nodes[nodeIndex].id = nuevoId;
+                // Actualizar dependencias en hijos
+                data.nodes.forEach(n => {
+                    if (n.parents) n.parents = n.parents.map(p => p === idViejo ? nuevoId : p);
+                });
+                if (data.positions && data.positions[idViejo]) {
+                    data.positions[nuevoId] = data.positions[idViejo];
+                    delete data.positions[idViejo];
+                }
+            } else if (nodeIndex === -1) {
+                // Crear nodo nuevo
+                data.nodes.push({ id: nuevoId, type: "discrete", states: [], parents: [], cpt: [] });
+                nodeIndex = data.nodes.length - 1;
+            }
+
+            let targetNode = data.nodes[nodeIndex];
+            targetNode.states = estados;
+            
+            // Reconstruir CPT del nodo editado para que el validador lo acepte
+            targetNode.cpt = buildDefaultCPT(targetNode, data.nodes);
+            
+            // Reconstruir CPT de TODOS los nodos hijos (Vital si le cambiaste el nombre o los estados al padre)
+            data.nodes.forEach(n => {
+                if (n.parents && n.parents.includes(nuevoId)) {
+                    n.cpt = buildDefaultCPT(n, data.nodes);
+                }
+            });
+
+            elEditor.value = JSON.stringify(data, null, 2);
+            nodoSeleccionadoId = nuevoId;
+            
+            if (typeof loadText === 'function') loadText(elEditor.value);
+            
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
+    }
+    
+    // --- ACCIÓN: ELIMINAR NODO ---
+    if (e.target && e.target.id === 'btn-eliminar-nodo') {
+        const inputId = document.getElementById('nodo-id');
+        const elEditor = document.getElementById('editor');
+        if (!inputId || !elEditor) return;
+        
+        const id = inputId.value.trim();
+        if (!id) return;
+        
+        try {
+            const data = JSON.parse(elEditor.value);
+            const nodeIndex = data.nodes.findIndex(n => n.id === id);
+            
+            if (nodeIndex !== -1) {
+                data.nodes.splice(nodeIndex, 1);
+                data.nodes.forEach(n => {
+                    if (n.parents && n.parents.includes(id)) {
+                        n.parents = n.parents.filter(p => p !== id);
+                        n.cpt = buildDefaultCPT(n, data.nodes); // Reconstruir tabla sin ese padre
+                    }
+                });
+                if (data.positions && data.positions[id]) delete data.positions[id];
+                
+                elEditor.value = JSON.stringify(data, null, 2);
+                if (typeof loadText === 'function') loadText(elEditor.value);
+                
+                inputId.value = '';
+                document.getElementById('nodo-estados').value = '';
+                nodoSeleccionadoId = null;
+            }
+        } catch(err) {}
+    }
+});
+
 })();
